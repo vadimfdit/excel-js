@@ -44,17 +44,13 @@ module.exports = {
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
-    port: 3000,
+    port: 3500,
     hot: isDev
   },
   plugins: [
     new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
-      template: 'index.html',
-      // minify: {
-      //   removeComments: isProd,
-      //   collapseWhitespace: isProd
-      // }
+      template: 'index.html'
     }),
     new CopyPlugin({
       patterns: [
