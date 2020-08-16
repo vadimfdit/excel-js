@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
@@ -16,12 +17,12 @@ const jsLoaders = () => {
       options: {
         presets: ['@babel/preset-env'],
         plugins: ['@babel/plugin-proposal-class-properties']
-      },
-    },
-  ];
+      }
+    }
+  ]
 
   if (isDev) {
-    loaders.push('eslint-loader');
+    loaders.push('eslint-loader')
   }
 
   return loaders
@@ -39,29 +40,34 @@ module.exports = {
     extensions: ['.js'],
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@core': path.resolve(__dirname, 'src/core'),
+      '@core': path.resolve(__dirname, 'src/core')
     }
   },
   devtool: isDev ? 'source-map' : false,
   devServer: {
-    port: 3500,
+    port: 3000,
     hot: isDev
   },
   plugins: [
     new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
-      template: 'index.html'
+      template: 'index.html',
+      minify: {
+        removeComments: isProd,
+        collapseWhitespace: isProd
+      }
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.resolve(__dirname, 'src/favicon.ico'),
-          to: path.resolve(__dirname, 'dist')
-        },
-      ],
-    }),
+    new CopyPlugin([
+      {
+        from: path.resolve(__dirname, 'src/favicon.ico'),
+        to: path.resolve(__dirname, 'dist')
+      }
+    ]),
     new MiniCssExtractPlugin({
       filename: filename('css')
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     })
   ],
   module: {
@@ -77,14 +83,14 @@ module.exports = {
             }
           },
           'css-loader',
-          'sass-loader',
+          'sass-loader'
         ],
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: jsLoaders(),
+        use: jsLoaders()
       }
-    ],
+    ]
   }
 }
